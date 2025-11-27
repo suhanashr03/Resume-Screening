@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Evaluation Results</title>
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 40px; 
+            background: linear-gradient(135deg, #00163E, #01257D);
+            color: #E8F6FF;
+        }
+
+        h1 { 
+            text-align: center; 
+            color: #00FFFF; 
+            margin-bottom: 30px;
+            text-shadow: 0 0 8px rgba(0,255,255,0.4);
+        }
+
+        .nav { 
+            text-align: center; 
+            margin-bottom: 25px; 
+        }
+
+        .nav a { 
+            display: inline-block; 
+            background: #01257D; 
+            color: #00FFFF; 
+            padding: 8px 14px; 
+            border-radius: 6px; 
+            margin: 0 5px; 
+            text-decoration: none; 
+            border: 1px solid #00FFFF;
+            transition: all 0.25s ease;
+        }
+
+        .nav a:hover { 
+            background: rgba(0, 255, 255, 0.15);
+            box-shadow: 0 0 8px rgba(0,255,255,0.4);
+        }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+            margin-bottom: 20px; 
+            max-width: 750px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            position: relative;
+            border: 1px solid rgba(0,255,255,0.3);
+        }
+
+        .top-badge { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            background: linear-gradient(90deg, #00FFFF, #0078FF);
+            color: #012040; 
+            font-weight: bold; 
+            padding: 5px 10px; 
+            border-radius: 6px; 
+            box-shadow: 0 0 8px rgba(0,255,255,0.4);
+        }
+
+        .filename { 
+            font-weight: bold; 
+            color: #00FFFF; 
+            font-size: 1.1em; 
+            margin-bottom: 8px;
+        }
+
+        .score { 
+            font-size: 1.1em; 
+            color: #E8F6FF; 
+            margin-bottom: 5px;
+        }
+
+        ul li { 
+            margin: 4px 0;
+            color: #B7E9FF;
+        }
+
+        .summary { 
+            margin-top: 10px; 
+            font-style: italic; 
+            color: #CDEFFF;
+        }
+
+        .matched { color: #00FFB3; }
+        .missing { color: #FF6B6B; }
+
+        .recommendations b { color: #00FFFF; }
+
+        .download-btn { 
+            display: inline-block; 
+            background: #01257D; 
+            color: #00FFFF; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            text-decoration: none; 
+            margin-top: 10px; 
+            border: 1px solid #00FFFF;
+            transition: all 0.25s ease;
+        }
+
+        .download-btn:hover { 
+            background: rgba(0, 255, 255, 0.15);
+            box-shadow: 0 0 8px rgba(0,255,255,0.5);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #00FFFF;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            text-shadow: 0 0 8px rgba(0,255,255,0.6);
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <h1>Resume Evaluation Results</h1>
+
+    <div class="nav">
+        <a href="{{ url_for('index') }}"> Home</a>
+        <a href="{{ url_for('history') }}"> History</a>
+        <a href="{{ url_for('dashboard') }}"> Dashboard</a>
+    </div>
+
+    {% set top_score = top_score if top_score is defined else 0 %}
+    
+    {% for result in results %}
+    <div class="card">
+        {% if result.overall_score == top_score %}
+        <div class="top-badge">🏆 Top Candidate</div>
+        {% endif %}
+        <div class="filename">{{ result.filename }}</div>
+        <div class="score">Overall Score: {{ result.overall_score }}/10</div>
+
+        <ul>
+            {% for key, value in result.sub_scores.items() %}
+            <li>{{ key|capitalize }}: {{ value }}</li>
+            {% endfor %}
+        </ul>
+
+        <p class="summary"><b>Summary:</b> {{ result.summary }}</p>
+
+        {% if result.skills %}
+        <div class="skills">
+            {% if result.skills.matched %}
+            <b class="matched"> Matched Skills:</b>
+            <p>{{ result.skills.matched | join(', ') }}</p>
+            {% endif %}
+            {% if result.skills.missing %}
+            <b class="missing"> Missing Skills:</b>
+            <p>{{ result.skills.missing | join(', ') }}</p>
+            {% endif %}
+        </div>
+
+        {% if result.skills.recommended_improvements %}
+        <div class="recommendations">
+            <b> Recommended Improvements:</b>
+            <ul>
+                {% for rec in result.skills.recommended_improvements %}
+                <li>{{ rec }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        <a class="download-btn" href="{{ url_for('download', filename=result.filename) }}">📄 Download PDF Report</a>
+    </div>
+    {% endfor %}
+
+    <a href="{{ url_for('index') }}" class="back-link">⬅ Back to Upload</a>
+</body>
+</html>

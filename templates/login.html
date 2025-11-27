@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Resume Matcher</title>
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: linear-gradient(135deg, #00163E, #01257D);
+      margin: 0; 
+      padding: 0; 
+      color: #E8F6FF;
+    }
+
+    .container { 
+      max-width: 400px; 
+      margin: 100px auto; 
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 30px; 
+      border-radius: 14px; 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
+      text-align: center;
+      border: 1px solid rgba(0,255,255,0.3);
+    }
+
+    h2 { 
+      margin-bottom: 20px; 
+      color: #00FFFF; 
+      text-shadow: 0 0 8px rgba(0,255,255,0.4);
+    }
+
+    input { 
+      width: 90%; 
+      padding: 10px; 
+      margin: 10px 0; 
+      border: 1px solid rgba(0,255,255,0.3); 
+      border-radius: 6px; 
+      background: rgba(0, 18, 60, 0.4);
+      color: #E8F6FF;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    input::placeholder {
+      color: #A8D9FF;
+    }
+
+    input:focus {
+      border-color: #00FFFF;
+      box-shadow: 0 0 8px rgba(0,255,255,0.4);
+      background: rgba(0, 18, 60, 0.6);
+    }
+
+    button { 
+      background-color: #01257D; 
+      color: #00FFFF; 
+      padding: 10px 15px; 
+      border: 1px solid #00FFFF;
+      border-radius: 6px; 
+      cursor: pointer; 
+      width: 95%; 
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    button:hover { 
+      background: rgba(0,255,255,0.15);
+      box-shadow: 0 0 10px rgba(0,255,255,0.5);
+    }
+
+    a { 
+      display: inline-block; 
+      margin-top: 12px; 
+      color: #00FFFF; 
+      text-decoration: none; 
+      transition: all 0.2s ease;
+    }
+
+    a:hover {
+      text-shadow: 0 0 8px rgba(0,255,255,0.6);
+    }
+
+    .message { 
+      background: rgba(255, 80, 80, 0.15); 
+      color: #FF6B6B; 
+      border-radius: 5px; 
+      padding: 8px; 
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,80,80,0.4);
+    }
+  </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <div class="container">
+    <h2>Login</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('login') }}">
+      <input type="text" name="username" placeholder="Enter username" required><br>
+      <input type="password" name="password" placeholder="Enter password" required><br>
+      <button type="submit">Login</button>
+    </form>
+
+    <a href="{{ url_for('register') }}">Don’t have an account? Register</a>
+  </div>
+</body>
+</html>

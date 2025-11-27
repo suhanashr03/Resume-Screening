@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume Evaluation Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 40px;
+      background: linear-gradient(135deg, #01257D 15%, #001b59 100%);
+      color: #f0f8ff;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00FFFF;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+    }
+
+    .nav {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .nav a {
+      display: inline-block;
+      background: #00FFFF;
+      color: #01257D;
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin: 0 6px;
+      text-decoration: none;
+      font-weight: 500;
+      box-shadow: 0 3px 6px rgba(0, 255, 255, 0.25);
+      transition: all 0.25s ease-in-out;
+    }
+
+    .nav a:hover {
+      background: #01257D;
+      color: #00FFFF;
+      box-shadow: 0 0 10px #00FFFF;
+      transform: translateY(-2px);
+    }
+
+    .chart-container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 400px !important;
+    }
+  </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+  <h1>Evaluation Dashboard</h1>
+
+  <div class="nav">
+    <a href="{{ url_for('index') }}"> Home</a>
+    <a href="{{ url_for('history') }}"> History</a>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="scoreChart"></canvas>
+  </div>
+
+  <script>
+    const data = {{ data | tojson }};
+    const labels = data.map(d => d.filename || "");
+    const overall = data.map(d => d.score ?? 0);
+    const skills = data.map(d => d.skills ?? 0);
+    const exp = data.map(d => d.experience ?? 0);
+    const edu = data.map(d => d.education ?? 0);
+    const domain = data.map(d => d.domain_knowledge ?? 0);
+
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: 'Overall', data: overall, backgroundColor: '#00FFFF' },
+          { label: 'Skills', data: skills, backgroundColor: '#4DEBFF' },
+          { label: 'Experience', data: exp, backgroundColor: '#00B8E6' },
+          { label: 'Education', data: edu, backgroundColor: '#007BBF' },
+          { label: 'Domain Knowledge', data: domain, backgroundColor: '#004C99' }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            ticks: { color: '#00FFFF', font: { size: 13 } },
+            grid: { color: 'rgba(0,255,255,0.1)' }
+          },
+          y: {
+            beginAtZero: true,
+            max: 10,
+            ticks: { color: '#00FFFF', font: { size: 13 } },
+            grid: { color: 'rgba(0,255,255,0.1)' }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#00FFFF', font: { size: 13 } }
+          },
+          title: {
+            display: true,
+            text: 'Resume Evaluation Scores (out of 10)',
+            color: '#00FFFF',
+            font: { size: 18, weight: 600 }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
